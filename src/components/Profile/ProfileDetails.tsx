@@ -1,6 +1,6 @@
 import React from 'react';
 import { User, MapPin, Award, Briefcase, Calendar, BookOpen, Flag, Building, Users } from 'lucide-react';
-import { Employee } from '../../data/employeesData';
+import { Employee } from '../../hooks/useEmployees';
 
 interface ProfileDetailsProps {
   employee: Employee;
@@ -9,16 +9,16 @@ interface ProfileDetailsProps {
 const ProfileDetails: React.FC<ProfileDetailsProps> = ({ employee }) => {
   const detailItems = [
     { icon: <User className="h-5 w-5 text-blue-600" />, label: 'Nama Lengkap', value: employee.nama },
-    { icon: <Flag className="h-5 w-5 text-blue-600" />, label: 'Jenis Kelamin', value: employee.jenisKelamin },
-    { icon: <Award className="h-5 w-5 text-blue-600" />, label: 'Cabang Olahraga', value: employee.cabangOlahraga },
+    { icon: <Flag className="h-5 w-5 text-blue-600" />, label: 'Jenis Kelamin', value: employee.jenis_kelamin },
+    { icon: <Award className="h-5 w-5 text-blue-600" />, label: 'Cabang Olahraga', value: employee.cabang_olahraga },
     { icon: <Briefcase className="h-5 w-5 text-blue-600" />, label: 'NIP', value: employee.nip },
     { icon: <Calendar className="h-5 w-5 text-blue-600" />, label: 'Jabatan', value: employee.jabatan },
     { icon: <Users className="h-5 w-5 text-blue-600" />, label: 'Peran', value: employee.peran },
     { icon: <BookOpen className="h-5 w-5 text-blue-600" />, label: 'Sertifikasi', value: employee.sertifikasi },
     { icon: <MapPin className="h-5 w-5 text-blue-600" />, label: 'Domisili Saat Ini', value: employee.domisili },
     { icon: <MapPin className="h-5 w-5 text-blue-600" />, label: 'Propinsi', value: employee.propinsi },
-    { icon: <Building className="h-5 w-5 text-blue-600" />, label: 'Tempat Melatih/Latihan', value: employee.tempatMelatih },
-    { icon: <Users className="h-5 w-5 text-blue-600" />, label: 'Tim Yang Dilatih / Diikuti', value: employee.timDilatih },
+    { icon: <Building className="h-5 w-5 text-blue-600" />, label: 'Tempat Melatih/Latihan', value: employee.tempat_melatih },
+    { icon: <Users className="h-5 w-5 text-blue-600" />, label: 'Tim Yang Dilatih / Diikuti', value: employee.tim_dilatih },
   ];
 
   return (
@@ -34,7 +34,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ employee }) => {
               <div className="mr-4 mt-1">{item.icon}</div>
               <div>
                 <h3 className="text-sm font-medium text-gray-500">{item.label}</h3>
-                <p className="mt-1 text-gray-900">{item.value}</p>
+                <p className="mt-1 text-gray-900">{item.value || '-'}</p>
               </div>
             </div>
           ))}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { ArrowLeft, User, MapPin, Award, Briefcase } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { Employee } from '../../data/employeesData';
+import { Employee } from '../../hooks/useEmployees';
 
 interface ProfileHeaderProps {
   employee: Employee;
@@ -24,9 +24,9 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ employee }) => {
       <div className="px-4 sm:px-6 pb-6 relative">
         <div className="flex flex-col sm:flex-row items-center sm:items-start -mt-16 sm:-mt-20">
           <div className="h-32 w-32 rounded-full overflow-hidden border-4 border-white shadow-md bg-white">
-            {employee.avatar ? (
+            {employee.avatar_url ? (
               <img 
-                src={employee.avatar} 
+                src={employee.avatar_url} 
                 alt={employee.nama} 
                 className="h-full w-full object-cover"
               />

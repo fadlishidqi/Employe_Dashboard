@@ -44,29 +44,45 @@ export function useEmployees() {
     }
   }
 
-  async function createEmployee(employee: Omit<Employee, 'id'>) {
-  try {
-    // Remove the authentication check for now
-    const { data, error } = await supabase
-      .from('employees')
-      .insert([{ ...employee }]) // Remove user_id requirement
-      .select()
-      .single();
+  async function getEmployeeById(id: string): Promise<Employee | null> {
+    try {
+      const { data, error } = await supabase
+        .from('employees')
+        .select('*')
+        .eq('id', id)
+        .single();
 
-    if (error) throw error;
-    setEmployees(prev => [data, ...prev]);
-    toast.success('Employee created successfully');
-    return data;
-  } catch (error) {
-    if (error instanceof Error) {
-      toast.error(error.message);
-    } else {
-      toast.error('Error creating employee');
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      toast.error('Error fetching employee');
+      console.error('Error:', error);
+      return null;
     }
-    console.error('Error:', error);
-    return null;
   }
-}
+
+  async function createEmployee(employee: Omit<Employee, 'id'>) {
+    try {
+      const { data, error } = await supabase
+        .from('employees')
+        .insert([{ ...employee }])
+        .select()
+        .single();
+
+      if (error) throw error;
+      setEmployees(prev => [data, ...prev]);
+      toast.success('Employee created successfully');
+      return data;
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error('Error creating employee');
+      }
+      console.error('Error:', error);
+      return null;
+    }
+  }
 
   async function updateEmployee(id: string, updates: Partial<Employee>) {
     try {
@@ -109,6 +125,43 @@ export function useEmployees() {
     loading,
     createEmployee,
     updateEmployee,
-    deleteEmployee
+    deleteEmployee,
+    getEmployeeById
   };
+}
+
+// Hook khusus untuk mendapatkan single employee
+export function useEmployee(id: string) {
+  const [employee, setEmployee] = useState<Employee | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!id) return;
+
+    async function fetchEmployee() {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        const { data, error } = await supabase
+          .from('employees')
+          .select('*')
+          .eq('id', id)
+          .single();
+
+        if (error) throw error;
+        setEmployee(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Error fetching employee');
+        console.error('Error:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchEmployee();
+  }, [id]);
+
+  return { employee, loading, error };
 }
