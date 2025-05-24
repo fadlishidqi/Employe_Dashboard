@@ -45,37 +45,28 @@ export function useEmployees() {
   }
 
   async function createEmployee(employee: Omit<Employee, 'id'>) {
-    try {
-      // Get the current user's ID
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+  try {
+    // Remove the authentication check for now
+    const { data, error } = await supabase
+      .from('employees')
+      .insert([{ ...employee }]) // Remove user_id requirement
+      .select()
+      .single();
 
-      if (!user) {
-        throw new Error('User must be authenticated to create an employee');
-      }
-
-      // Create the employee with the user_id
-      const { data, error } = await supabase
-        .from('employees')
-        .insert([{ ...employee, user_id: user.id }])
-        .select()
-        .single();
-
-      if (error) throw error;
-      setEmployees(prev => [data, ...prev]);
-      toast.success('Employee created successfully');
-      return data;
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      } else {
-        toast.error('Error creating employee');
-      }
-      console.error('Error:', error);
-      return null;
+    if (error) throw error;
+    setEmployees(prev => [data, ...prev]);
+    toast.success('Employee created successfully');
+    return data;
+  } catch (error) {
+    if (error instanceof Error) {
+      toast.error(error.message);
+    } else {
+      toast.error('Error creating employee');
     }
+    console.error('Error:', error);
+    return null;
   }
+}
 
   async function updateEmployee(id: string, updates: Partial<Employee>) {
     try {
